@@ -1,145 +1,232 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="apple-touch-icon" href="https://postimg.cc/PPPFKznJ][img]https://i.postimg.cc/PPPFKznJ/06555b4aeb3643e3ca970f7270f7f607.jpg">
     <title>致最亲爱的妈妈</title>
     <style>
-        :root { --main-pink: #ffafbd; --soft-gold: #d4a373; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #fff5ee; font-family: 'STKaiti', 'KaiTi', serif; }
-        
-        /* 画布层 */
-        #canvas { position: fixed; top: 0; left: 0; z-index: 1; }
+        :root {
+            --glass: rgba(255, 255, 255, 0.2);
+            --text-color: #5d4037;
+        }
 
-        /* 内容层 */
-        #ui-layer { position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
 
-        /* 3D相册样式 */
-        .album-container { width: 150px; height: 150px; perspective: 1000px; display: none; pointer-events: auto; }
-        .box { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: rotateBox 10s infinite linear; }
-        .box div { position: absolute; width: 150px; height: 150px; opacity: 0.9; border: 2px solid #fff; background: var(--main-pink); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; }
-        
-        /* 6个面 */
-        .front  { transform: translateZ(75px); }
-        .back   { transform: rotateY(180deg) translateZ(75px); }
-        .left   { transform: rotateY(-90deg) translateZ(75px); }
-        .right  { transform: rotateY(90deg) translateZ(75px); }
-        .top    { transform: rotateX(90deg) translateZ(75px); }
-        .bottom { transform: rotateX(-90deg) translateZ(75px); }
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            /* 动态流光背景 */
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0bb, #fbc2eb);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
 
-        @keyframes rotateBox { from { transform: rotateX(0) rotateY(0); } to { transform: rotateX(360deg) rotateY(360deg); } }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-        /* 引导文字 */
-        #guide-text { color: var(--soft-gold); font-size: 1.2rem; transition: opacity 0.5s; pointer-events: auto; }
-        .hidden { opacity: 0; }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
 
-        /* 祝福语 */
-        #wish { display: none; text-align: center; color: #e76f51; padding: 20px; animation: fadeIn 2s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* 磨砂玻璃卡片容器 */
+        .glass-card {
+            position: relative;
+            z-index: 10;
+            width: 85%;
+            max-width: 350px;
+            padding: 40px 20px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transform: translateY(0);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .heart-icon {
+            font-size: 50px;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.1); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.1); }
+            70% { transform: scale(1); }
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #795548;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        /* 互动按钮 */
+        .glow-button {
+            padding: 12px 35px;
+            background: white;
+            color: #ff758c;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .glow-button:active {
+            transform: scale(0.9);
+        }
+
+        /* 底部互动提示 */
+        .hint {
+            position: fixed;
+            bottom: 40px;
+            font-size: 0.8rem;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            z-index: 11;
+        }
     </style>
 </head>
 <body>
 
+    <audio src="https://www.image2url.com/r2/default/audio/1778340688432-2f2eae9e-cb05-4a95-95cb-a345b08abf41.mp3" id="bgm" loop></audio>
+    
     <canvas id="canvas"></canvas>
 
-    <div id="ui-layer">
-        <div id="guide-text">长按屏幕，开启惊喜 ✨</div>
-        
-        <div class="album-container" id="album">
-            <div class="box">
-                <div class="front">永远年轻</div>
-                <div class="back">天天开心</div>
-                <div class="left">我爱你</div>
-                <div class="right">你是最棒的</div>
-                <div class="top">母亲节快乐</div>
-                <div class="bottom">❤️</div>
-            </div>
-        </div>
-
-        <div id="wish">
-            <h2>🌸 母亲节快乐 🌸</h2>
-            <p>在这个世界上，<br>你是唯一能让我无条件依赖的人。<br>愿你岁月无忧，眉眼带笑。</p>
-        </div>
+    <div class="glass-card" id="mainCard">
+        <div class="heart-icon">🌹</div>
+        <h1>亲爱的妈妈</h1>
+        <p id="typewriter"></p>
+        <button class="glow-button" onclick="celebrate()">点击领取爱心</button>
     </div>
 
+    <div class="hint">点击屏幕任何地方，都有惊喜哦</div>
+
     <script>
+        // 1. 打字机效果
+        const text = "感谢你不是超人，却为我变成了万能。\n祝你母亲节快乐，平安喜乐，永远美丽。";
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                document.getElementById("typewriter").innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+        window.onload = typeWriter;
+
+        // 2. 粒子与交互系统
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let timer;
 
-        // 初始化画布
-        function init() {
+        function initCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
-        window.addEventListener('resize', init);
-        init();
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
 
-        // 粒子类
-        class Particle {
-            constructor(x, y, color) {
-                this.x = x; this.y = y;
-                this.size = Math.random() * 5 + 2;
-                this.speedX = Math.random() * 3 - 1.5;
-                this.speedY = Math.random() * -3 - 1;
-                this.color = color;
-                this.opacity = 1;
+        class Petal {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * 10 + 5;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 1 + 1;
+                this.angle = Math.random() * 360;
+                this.spin = Math.random() * 2 - 1;
             }
             update() {
-                this.x += this.speedX;
                 this.y += this.speedY;
-                this.opacity -= 0.01;
+                this.x += this.speedX;
+                this.angle += this.spin;
+                if (this.y > canvas.height) this.y = -20;
             }
             draw() {
-                ctx.globalAlpha = this.opacity;
-                ctx.fillStyle = this.color;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle * Math.PI / 180);
+                ctx.fillStyle = 'rgba(255, 182, 193, 0.8)';
+                // 绘制一个简单的花瓣形状
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.ellipse(0, 0, this.size, this.size/2, 0, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.restore();
             }
+        }
+
+        // 初始化背景花瓣
+        for (let j = 0; j < 30; j++) {
+            particles.push(new Petal());
         }
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach((p, i) => {
+            particles.forEach(p => {
                 p.update();
                 p.draw();
-                if (p.opacity <= 0) particles.splice(i, 1);
             });
             requestAnimationFrame(animate);
         }
         animate();
 
-        // 交互逻辑
-        const guide = document.getElementById('guide-text');
-        const album = document.getElementById('album');
-        const wish = document.getElementById('wish');
-
-        function startSurprise(e) {
-            e.preventDefault();
-            guide.classList.add('hidden');
-            album.style.display = 'block';
-            timer = setInterval(() => {
-                for(let i=0; i<5; i++) {
-                    particles.push(new Particle(window.innerWidth/2, window.innerHeight/2 + 100, '#ffb6c1'));
-                }
-            }, 50);
-        }
-
-        function endSurprise() {
-            clearInterval(timer);
-            album.style.display = 'none';
-            wish.style.display = 'block';
-            // 爆发彩色粒子
-            for(let i=0; i<100; i++) {
-                particles.push(new Particle(window.innerWidth/2, window.innerHeight/2, `hsl(${Math.random()*360}, 70%, 70%)`));
+        // 3. 点击爆发特效
+        function celebrate() {
+            for (let k = 0; k < 50; k++) {
+                createSparkle(window.innerWidth / 2, window.innerHeight / 2);
             }
         }
 
-        // 适配手机长按
-        window.addEventListener('touchstart', startSurprise);
-        window.addEventListener('touchend', endSurprise);
+        window.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            for (let k = 0; k < 10; k++) {
+                createSparkle(touch.clientX, touch.clientY);
+            }
+        });
+
+        function createSparkle(x, y) {
+            const p = new Petal();
+            p.x = x;
+            p.y = y;
+            p.speedY = Math.random() * 10 - 5;
+            p.speedX = Math.random() * 10 - 5;
+            particles.push(p);
+            // 限制粒子数量，避免卡顿
+            if (particles.length > 150) particles.shift();
+        }
     </script>
 </body>
 </html>
