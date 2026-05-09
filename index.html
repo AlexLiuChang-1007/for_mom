@@ -3,229 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <link rel="apple-touch-icon" href="https://postimg.cc/PPPFKznJ][img]https://i.postimg.cc/PPPFKznJ/06555b4aeb3643e3ca970f7270f7f607.jpg">
-    <title>致最亲爱的妈妈</title>
+    <title>给最亲爱的妈妈</title>
     <style>
         :root {
-            --glass: rgba(255, 255, 255, 0.2);
-            --text-color: #5d4037;
+            --primary-pink: #ffafbd;
+            --secondary-pink: #ffc3a0;
+            --text-brown: #5d4037;
         }
 
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            /* 动态流光背景 */
-            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0bb, #fbc2eb);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        body, html { 
+            width: 100%; height: 100%; overflow: hidden; 
+            background: #fff5ee; 
+            font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* 统一背景流光 */
+        .bg-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            z-index: -1; opacity: 0.6;
         }
 
-        #canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            pointer-events: none;
+        /* 场景控制 */
+        .scene {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; transition: opacity 0.8s ease;
         }
+        .scene.active { display: flex; animation: fadeIn 1s; }
 
-        /* 磨砂玻璃卡片容器 */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- 场景1：信封 --- */
+        #envelope {
+            width: 200px; height: 140px; background: #fff; border-radius: 5px;
+            position: relative; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        #envelope:after {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 0; height: 0; border-style: solid;
+            border-width: 70px 100px 0 100px;
+            border-color: #ffc3a0 transparent transparent transparent;
+        }
+        .open-hint { margin-top: 30px; color: #fff; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+        /* --- 场景2：互动生长 --- */
+        #garden-canvas { position: absolute; top: 0; left: 0; z-index: 5; touch-action: none; }
+        .garden-ui { position: relative; z-index: 10; color: #fff; text-align: center; pointer-events: none; }
+
+        /* --- 场景3：主卡片 --- */
         .glass-card {
-            position: relative;
-            z-index: 10;
-            width: 85%;
-            max-width: 350px;
-            padding: 40px 20px;
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transform: translateY(0);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 40px 25px; width: 90%; max-width: 350px;
+            text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        .typewriter-text { min-height: 80px; color: var(--text-brown); line-height: 1.8; margin: 20px 0; font-weight: 500; }
+
+        /* --- 场景4：爱的兑换券 --- */
+        .coupon-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; margin-top: 20px; }
+        .coupon {
+            background: #fff; padding: 15px; border-radius: 15px;
+            font-size: 0.9rem; color: #ff758c; border: 2px dashed #ffb6c1;
+            box-shadow: 4px 4px 0px #ffb6c1; transition: 0.2s;
+        }
+        .coupon.used { background: #eee; border-color: #ccc; color: #999; box-shadow: none; transform: scale(0.95); }
+
+        /* 通用按钮 */
+        .btn {
+            padding: 12px 30px; background: white; border-radius: 50px;
+            border: none; color: #ff758c; font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255,117,140,0.3);
+            margin-top: 20px;
         }
 
-        .heart-icon {
-            font-size: 50px;
-            margin-bottom: 20px;
-            display: inline-block;
-            animation: heartbeat 1.5s infinite;
+        #bgm-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 100;
+            width: 35px; height: 35px; background: rgba(255,255,255,0.5);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 20px; border: none;
         }
-
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            14% { transform: scale(1.1); }
-            28% { transform: scale(1); }
-            42% { transform: scale(1.1); }
-            70% { transform: scale(1); }
-        }
-
-        h1 {
-            font-size: 1.5rem;
-            color: var(--text-color);
-            margin-bottom: 15px;
-            letter-spacing: 2px;
-        }
-
-        p {
-            font-size: 1rem;
-            color: #795548;
-            line-height: 1.8;
-            margin-bottom: 30px;
-        }
-
-        /* 互动按钮 */
-        .glow-button {
-            padding: 12px 35px;
-            background: white;
-            color: #ff758c;
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.3);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .glow-button:active {
-            transform: scale(0.9);
-        }
-
-        /* 底部互动提示 */
-        .hint {
-            position: fixed;
-            bottom: 40px;
-            font-size: 0.8rem;
-            color: white;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
-            z-index: 11;
-        }
+        .rotating { animation: rotate 3s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <audio src="https://www.image2url.com/r2/default/audio/1778340688432-2f2eae9e-cb05-4a95-95cb-a345b08abf41.mp3" id="bgm" loop></audio>
-    
-    <canvas id="canvas"></canvas>
+    <div class="bg-layer"></div>
+    <button id="bgm-btn" onclick="toggleBGM()">🎵</button>
+    <audio id="bgm" src="https://www.image2url.com/r2/default/audio/1778340688432-2f2eae9e-cb05-4a95-95cb-a345b08abf41.mp3" loop></audio>
 
-    <div class="glass-card" id="mainCard">
-        <div class="heart-icon">🌹</div>
-        <h1>亲爱的妈妈</h1>
-        <p id="typewriter"></p>
-        <button class="glow-button" onclick="celebrate()">点击领取爱心</button>
+    <div class="scene active" id="scene1">
+        <div id="envelope" onclick="goToScene(2)"></div>
+        <p class="open-hint">妈妈亲启，拆开惊喜 ✨</p>
     </div>
 
-    <div class="hint">点击屏幕任何地方，都有惊喜哦</div>
+    <div class="scene" id="scene2">
+        <canvas id="garden-canvas"></canvas>
+        <div class="garden-ui">
+            <h2>为妈妈播种花海</h2>
+            <p>在屏幕上轻轻滑动手指...</p>
+        </div>
+        <button class="btn" style="position:absolute; bottom:100px; z-index:20" onclick="goToScene(3)">完成播种 ✨</button>
+    </div>
+
+    <div class="scene" id="scene3">
+        <div class="glass-card">
+            <div style="font-size: 50px; animation: heartbeat 1.5s infinite;">💐</div>
+            <h2 style="color: #5d4037; margin: 10px 0;">母亲节快乐</h2>
+            <div class="typewriter-text" id="typewriter"></div>
+            <button class="btn" onclick="goToScene(4)">还有小惊喜 ✨</button>
+        </div>
+    </div>
+
+    <div class="scene" id="scene4">
+        <div class="glass-card">
+            <h3>🎁 爱的兑换券</h3>
+            <p style="font-size: 0.8rem; margin-bottom: 10px;">点击卡片即可永久核销(我赖不掉的)</p>
+            <div class="coupon-grid">
+                <div class="coupon" onclick="useCoupon(this)">终身洗碗券</div>
+                <div class="coupon" onclick="useCoupon(this)">专属拥抱券</div>
+                <div class="coupon" onclick="useCoupon(this)">陪逛街1整天</div>
+                <div class="coupon" onclick="useCoupon(this)">不准生气券</div>
+            </div>
+            <button class="btn" onclick="alert('妈妈我爱你！永远爱你！')">保存这张截图 ❤️</button>
+        </div>
+    </div>
 
     <script>
-        // 1. 打字机效果
-        const text = "感谢你不是超人，却为我变成了万能。\n祝你母亲节快乐，平安喜乐，永远美丽。";
-        let i = 0;
-        function typeWriter() {
-            if (i < text.length) {
-                document.getElementById("typewriter").innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
-                i++;
-                setTimeout(typeWriter, 100);
+        // 场景管理
+        function goToScene(index) {
+            document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+            document.getElementById('scene' + index).classList.add('active');
+            
+            if(index === 2) initGarden();
+            if(index === 3) {
+                startTypewriter();
+                playBGM();
             }
         }
-        window.onload = typeWriter;
 
-        // 2. 粒子与交互系统
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
+        // BGM 控制
+        const bgm = document.getElementById('bgm');
+        const bgmBtn = document.getElementById('bgm-btn');
+        function playBGM() {
+            bgm.play();
+            bgmBtn.classList.add('rotating');
+        }
+        function toggleBGM() {
+            if(bgm.paused) { bgm.play(); bgmBtn.classList.add('rotating'); }
+            else { bgm.pause(); bgmBtn.classList.remove('rotating'); }
+        }
 
-        function initCanvas() {
+        // 场景2逻辑：花朵互动
+        function initGarden() {
+            const canvas = document.getElementById('garden-canvas');
+            const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', initCanvas);
-        initCanvas();
 
-        class Petal {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height - canvas.height;
-                this.size = Math.random() * 10 + 5;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 1 + 1;
-                this.angle = Math.random() * 360;
-                this.spin = Math.random() * 2 - 1;
+            function drawFlower(x, y) {
+                const petals = 6;
+                const radius = Math.random() * 10 + 5;
+                ctx.fillStyle = `hsl(${Math.random() * 30 + 330}, 80%, 70%)`;
+                for (let i = 0; i < petals; i++) {
+                    const angle = (i * 2 * Math.PI) / petals;
+                    const px = x + Math.cos(angle) * radius;
+                    const py = y + Math.sin(angle) * radius;
+                    ctx.beginPath();
+                    ctx.arc(px, py, radius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.fillStyle = '#ffeb3b';
+                ctx.beginPath(); ctx.arc(x, y, radius/2, 0, Math.PI * 2); ctx.fill();
             }
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-                this.angle += this.spin;
-                if (this.y > canvas.height) this.y = -20;
-            }
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.angle * Math.PI / 180);
-                ctx.fillStyle = 'rgba(255, 182, 193, 0.8)';
-                // 绘制一个简单的花瓣形状
-                ctx.beginPath();
-                ctx.ellipse(0, 0, this.size, this.size/2, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
-        }
 
-        // 初始化背景花瓣
-        for (let j = 0; j < 30; j++) {
-            particles.push(new Petal());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
+            canvas.addEventListener('touchmove', (e) => {
+                const touch = e.touches[0];
+                drawFlower(touch.clientX, touch.clientY);
             });
-            requestAnimationFrame(animate);
-        }
-        animate();
-
-        // 3. 点击爆发特效
-        function celebrate() {
-            for (let k = 0; k < 50; k++) {
-                createSparkle(window.innerWidth / 2, window.innerHeight / 2);
-            }
         }
 
-        window.addEventListener('touchstart', (e) => {
-            const touch = e.touches[0];
-            for (let k = 0; k < 10; k++) {
-                createSparkle(touch.clientX, touch.clientY);
+        // 场景3逻辑：打字机
+        function startTypewriter() {
+            const text = "感谢你不是超人，却为我变成了万能。\n在这个属于你的日子里，\n愿你被岁月温柔以待，永远是我的少女！";
+            let i = 0;
+            const target = document.getElementById('typewriter');
+            target.innerHTML = "";
+            function type() {
+                if (i < text.length) {
+                    target.innerHTML += text.charAt(i) === '\n' ? '<br>' : text.charAt(i);
+                    i++;
+                    setTimeout(type, 100);
+                }
             }
-        });
+            type();
+        }
 
-        function createSparkle(x, y) {
-            const p = new Petal();
-            p.x = x;
-            p.y = y;
-            p.speedY = Math.random() * 10 - 5;
-            p.speedX = Math.random() * 10 - 5;
-            particles.push(p);
-            // 限制粒子数量，避免卡顿
-            if (particles.length > 150) particles.shift();
+        // 场景4逻辑：兑换券
+        function useCoupon(el) {
+            if(!el.classList.contains('used')) {
+                el.classList.add('used');
+                el.innerHTML += " ✅";
+                // 手机震动反馈
+                if(window.navigator.vibrate) window.navigator.vibrate(50);
+            }
         }
     </script>
 </body>
