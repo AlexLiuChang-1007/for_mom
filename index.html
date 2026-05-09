@@ -40,7 +40,7 @@
 
         /* 场景2：画布互动 */
         #garden-canvas { position: absolute; top: 0; left: 0; z-index: 1; touch-action: none; }
-        .instruction { position: absolute; top: 15%; color: white; font-size: 1.2rem; text-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 5; pointer-events: none; }
+        .instruction { position: absolute; top: 15%; color: black; font-size: 1.2rem; text-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 5; pointer-events: none; }
 
         /* 场景3 & 4：通用卡片样式 */
         .glass-card {
@@ -82,14 +82,14 @@
     <div class="envelope-wrapper" onclick="toScene(2)">
         <div class="heart-seal">❤️</div>
     </div>
-    <p style="margin-top:40px; color:#fff; letter-spacing:2px;">妈妈亲启，拆开惊喜</p>
+    <p style="margin-top:40px; color:#000; letter-spacing:2px;">妈妈亲启，拆开惊喜</p>
 </div>
 
 <div class="scene" id="s2">
     <canvas id="garden-canvas"></canvas>
     <div class="instruction">
         <p>滑动手指</p>
-        <p>为妈妈种下满屏花开</p>
+        <p>种下满屏的花开</p>
     </div>
     <button class="btn" style="position:absolute; bottom:80px; z-index:100;" onclick="toScene(3)">收起花海 🌻</button>
 </div>
