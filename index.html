@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>致最亲爱的妈妈</title>
+    <style>
+        :root { --main-pink: #ffafbd; --soft-gold: #d4a373; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #fff5ee; font-family: 'STKaiti', 'KaiTi', serif; }
+        
+        /* 画布层 */
+        #canvas { position: fixed; top: 0; left: 0; z-index: 1; }
+
+        /* 内容层 */
+        #ui-layer { position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+
+        /* 3D相册样式 */
+        .album-container { width: 150px; height: 150px; perspective: 1000px; display: none; pointer-events: auto; }
+        .box { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: rotateBox 10s infinite linear; }
+        .box div { position: absolute; width: 150px; height: 150px; opacity: 0.9; border: 2px solid #fff; background: var(--main-pink); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; }
+        
+        /* 6个面 */
+        .front  { transform: translateZ(75px); }
+        .back   { transform: rotateY(180deg) translateZ(75px); }
+        .left   { transform: rotateY(-90deg) translateZ(75px); }
+        .right  { transform: rotateY(90deg) translateZ(75px); }
+        .top    { transform: rotateX(90deg) translateZ(75px); }
+        .bottom { transform: rotateX(-90deg) translateZ(75px); }
+
+        @keyframes rotateBox { from { transform: rotateX(0) rotateY(0); } to { transform: rotateX(360deg) rotateY(360deg); } }
+
+        /* 引导文字 */
+        #guide-text { color: var(--soft-gold); font-size: 1.2rem; transition: opacity 0.5s; pointer-events: auto; }
+        .hidden { opacity: 0; }
+
+        /* 祝福语 */
+        #wish { display: none; text-align: center; color: #e76f51; padding: 20px; animation: fadeIn 2s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div id="ui-layer">
+        <div id="guide-text">长按屏幕，开启惊喜 ✨</div>
+        
+        <div class="album-container" id="album">
+            <div class="box">
+                <div class="front">永远年轻</div>
+                <div class="back">天天开心</div>
+                <div class="left">我爱你</div>
+                <div class="right">你是最棒的</div>
+                <div class="top">母亲节快乐</div>
+                <div class="bottom">❤️</div>
+            </div>
+        </div>
+
+        <div id="wish">
+            <h2>🌸 母亲节快乐 🌸</h2>
+            <p>在这个世界上，<br>你是唯一能让我无条件依赖的人。<br>愿你岁月无忧，眉眼带笑。</p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let timer;
+
+        // 初始化画布
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', init);
+        init();
+
+        // 粒子类
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x; this.y = y;
+                this.size = Math.random() * 5 + 2;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * -3 - 1;
+                this.color = color;
+                this.opacity = 1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.opacity -= 0.01;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                p.update();
+                p.draw();
+                if (p.opacity <= 0) particles.splice(i, 1);
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // 交互逻辑
+        const guide = document.getElementById('guide-text');
+        const album = document.getElementById('album');
+        const wish = document.getElementById('wish');
+
+        function startSurprise(e) {
+            e.preventDefault();
+            guide.classList.add('hidden');
+            album.style.display = 'block';
+            timer = setInterval(() => {
+                for(let i=0; i<5; i++) {
+                    particles.push(new Particle(window.innerWidth/2, window.innerHeight/2 + 100, '#ffb6c1'));
+                }
+            }, 50);
+        }
+
+        function endSurprise() {
+            clearInterval(timer);
+            album.style.display = 'none';
+            wish.style.display = 'block';
+            // 爆发彩色粒子
+            for(let i=0; i<100; i++) {
+                particles.push(new Particle(window.innerWidth/2, window.innerHeight/2, `hsl(${Math.random()*360}, 70%, 70%)`));
+            }
+        }
+
+        // 适配手机长按
+        window.addEventListener('touchstart', startSurprise);
+        window.addEventListener('touchend', endSurprise);
+    </script>
+</body>
+</html>
