@@ -42,6 +42,7 @@
             padding: 40px; text-align: center;
         }
         .active { display: flex; animation: sceneSwitch 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+        
         @keyframes sceneSwitch {
             from { opacity: 0; filter: blur(10px); transform: scale(0.9); }
             to { opacity: 1; filter: blur(0); transform: scale(1); }
@@ -55,14 +56,6 @@
             padding: 40px 30px; width: 100%; max-width: 360px;
             box-shadow: 0 25px 50px rgba(0,0,0,0.08);
             display: flex; flex-direction: column; align-items: center;
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        /* 💡 新增：卡片淡出样式 */
-        .fade-out {
-            opacity: 0 !important;
-            transform: scale(0.9) translateY(-20px);
-            pointer-events: none;
         }
 
         .shimmer-text {
@@ -137,12 +130,12 @@
     </section>
 
     <section class="scene" id="s2">
-        <canvas id="garden-canvas" style="position:absolute; inset:0;"></canvas>
-        <div class="glass-card" id="garden-tip" style="pointer-events:none; margin-bottom: 120px; z-index: 5;">
-            <p class="shimmer-text" style="font-size:1.2rem;">在这里，为妈妈画出一片春天</p>
+        <canvas id="garden-canvas" style="position:absolute; inset:0; z-index: 1; touch-action: none;"></canvas>
+        <div class="glass-card" id="garden-tip" style="pointer-events:none; margin-bottom: 120px; z-index: 10; transition: all 0.6s ease;">
+            <p class="shimmer-text" style="font-size:1.2rem;">在这里，画出一片春天</p>
             <p style="font-size: 0.9rem; color: #888; margin-top: 10px;">滑动手指试试看</p>
         </div>
-        <button class="btn-main" style="position:absolute; bottom:80px; z-index: 2;" onclick="nextScene(3)">看，花开好了 🌻</button>
+        <button class="btn-main" style="position:absolute; bottom:80px; z-index: 100;" onclick="nextScene(3)">看，花开好了 🌻</button>
     </section>
 
     <section class="scene" id="s3">
@@ -188,25 +181,38 @@
         if(idx === 3) { initWordCloud(); startTyping(); }
     }
 
-    // 💡 优化后的种花逻辑
+    // 💡 彻底修复的种花逻辑
     function initGarden() {
         const c = document.getElementById('garden-canvas');
         const tip = document.getElementById('garden-tip');
         const ctx = c.getContext('2d');
-        c.width = window.innerWidth; c.height = window.innerHeight;
+        c.width = window.innerWidth;
+        c.height = window.innerHeight;
 
-        // 监听手指触碰，立刻淡出提示卡片
-        c.addEventListener('touchstart', () => {
-            tip.classList.add('fade-out');
-        }, { once: true }); // once: true 保证只执行一次，提高性能
+        let hasStarted = false;
 
-        c.ontouchmove = (e) => {
-            e.preventDefault(); // 防止滚动
+        function hideTip() {
+            if (!hasStarted) {
+                tip.style.opacity = '0';
+                tip.style.transform = 'scale(0.8) translateY(-20px)';
+                setTimeout(() => { tip.style.display = 'none'; }, 600);
+                hasStarted = true;
+            }
+        }
+
+        // 强力监听触碰事件
+        c.addEventListener('touchstart', (e) => {
+            hideTip();
+        }, { passive: false });
+
+        c.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // 阻止页面滚动
+            hideTip();
             const t = e.touches[0];
             for(let i=0; i<3; i++) {
                 drawFlower(ctx, t.clientX + (Math.random()-0.5)*40, t.clientY + (Math.random()-0.5)*40);
             }
-        };
+        }, { passive: false });
     }
 
     function drawFlower(ctx, x, y) {
@@ -220,11 +226,10 @@
         ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x, y, r/2, 0, Math.PI*2); ctx.fill();
     }
 
-    // 词云与打字机逻辑保持不变...
     function initWordCloud() {
         const words = ['温柔','超人妈妈','少女心','避风港','厨神','坚强','最爱你了','辛苦了','最美'];
         const container = document.getElementById('word-cloud');
-        const timer = setInterval(() => {
+        const cloudTimer = setInterval(() => {
             if(document.getElementById('s3').classList.contains('active')) {
                 const w = document.createElement('div');
                 w.className = 'word-item';
@@ -233,7 +238,7 @@
                 w.style.fontSize = Math.random()*15 + 15 + 'px';
                 container.appendChild(w);
                 setTimeout(() => w.remove(), 10000);
-            } else { clearInterval(timer); }
+            } else { clearInterval(cloudTimer); }
         }, 800);
     }
 
@@ -241,11 +246,11 @@
         const text = "感谢你不是超人，\n却为我变成了万能。\n愿时光慢些走，\n让我能爱你久一点、再久一点。";
         let n = 0; const target = document.getElementById('typed');
         target.innerHTML = "";
-        const timer = setInterval(() => {
+        const typeTimer = setInterval(() => {
             if(n < text.length) {
                 target.innerHTML += text[n] === '\n' ? '<br>' : text[n];
                 n++;
-            } else clearInterval(timer);
+            } else clearInterval(typeTimer);
         }, 100);
     }
 
@@ -271,7 +276,6 @@
         setTimeout(() => alert("母亲节快乐，Alex永远爱你！"), 2000);
     }
 
-    // 全局背景花瓣
     setInterval(() => {
         const e = document.createElement('div');
         e.className = 'fall-emoji';
