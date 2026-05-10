@@ -3,148 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>给最亲爱的妈妈 ❤️</title>
+    <title>致最亲爱的妈妈 ❤️</title>
     <style>
-        :root { --p-pink: #ffafbd; --s-pink: #ffc3a0; --t-brown: #5d4037; }
+        :root { --p-pink: #ffafbd; --s-pink: #ffc3a0; --t-brown: #5d4037; --gold: #d4af37; }
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #fff5ee; font-family: -apple-system, sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #fff5ee; font-family: -apple-system, "Noto Sans SC", sans-serif; }
 
+        /* --- 视觉层级定义 --- */
+        
+        /* 1. 背景层 */
         .bg-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(125deg, #ff9a9e, #fecfef, #feada6, #fad0c4);
             background-size: 400% 400%;
             animation: moveBG 15s ease infinite;
-            z-index: -1;
+            z-index: -2; /* 放在最最下面 */
         }
         @keyframes moveBG { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 
-        .fall-item{
-            position:fixed;
-            top:-10%;
-            z-index:1;
-            pointer-events:none;
-            animation:falling 6s linear infinite;
-            font-size:18px;
+        /* 2. 装饰层 (修复：不再遮挡文字) */
+        .fall-item {
+            position: fixed; top: -10%; z-index: -1; /* 关键：在内容层之下 */
+            pointer-events: none;
+            animation: falling 8s linear infinite;
         }
-        @keyframes falling{
-            0%{transform:translateY(0) rotate(0deg);opacity:0.9;}
-            100%{transform:translateY(100vh) rotate(360deg);opacity:0;}
+        @keyframes falling {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
 
-        .heart-burst{
-            position:fixed;
-            pointer-events:none;
-            z-index:9999;
-            animation:burst 1.6s ease-out forwards;
-            font-size:24px;
+        /* 3. 点击特效 (最高层) */
+        .heart-burst {
+            position: fixed; pointer-events: none; z-index: 9999;
+            animation: burst 1.2s cubic-bezier(0.2, 0.6, 0.4, 1) forwards;
         }
-        @keyframes burst{
-            0%{opacity:1;transform:scale(1);}
-            100%{opacity:0;transform:translateY(-220px) scale(1.5);}
+        @keyframes burst {
+            0% { opacity: 1; transform: scale(0.5); }
+            100% { opacity: 0; transform: translateY(-150px) scale(1.5) rotate(20deg); }
         }
+
+        /* --- 内容组件 --- */
 
         .scene {
             position: absolute; width: 100%; height: 100%;
             display: none; flex-direction: column; align-items: center; justify-content: center;
-            padding: 30px; text-align: center;
+            padding: 30px; z-index: 10; /* 内容层居中 */
         }
-        .active { display: flex; animation: sceneEnter 1s forwards; }
-        @keyframes sceneEnter { from { opacity: 0; transform: scale(1.1); } to { opacity: 1; transform: scale(1); } }
+        .active { display: flex; animation: sceneEnter 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes sceneEnter { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .envelope-wrapper { position: relative; width: 240px; height: 160px; background: #fff; border-radius: 10px; box-shadow: 0 15px 40px rgba(0,0,0,0.15); cursor: pointer; transition:0.3s;}
-        .envelope-wrapper:active{transform:scale(0.95);}
-        .envelope-wrapper::before {
-            content: ''; position: absolute; top: -2px; left: 0;
-            width: 0; height: 0; border-left: 120px solid transparent; border-right: 120px solid transparent;
-            border-top: 90px solid #ffc3a0; z-index: 2;
+        /* 高级感：信封微动效 */
+        .envelope-wrapper { 
+            position: relative; width: 220px; height: 150px; background: #fff; 
+            border-radius: 4px; box-shadow: 0 20px 50px rgba(212, 175, 55, 0.2); 
+            cursor: pointer; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 11;
         }
-        .heart-seal { position: absolute; top: 65px; left: 105px; font-size: 32px; z-index: 3; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .envelope-wrapper:hover { transform: translateY(-10px) rotate(2deg); }
+        .envelope-wrapper::before {
+            content: ''; position: absolute; top: -1px; left: 0;
+            width: 0; height: 0; border-left: 110px solid transparent; border-right: 110px solid transparent;
+            border-top: 80px solid #ffc3a0; z-index: 2;
+        }
+        .heart-seal { position: absolute; top: 55px; left: 95px; font-size: 30px; z-index: 3; animation: pulse 2s infinite; }
 
         #garden-canvas { position: absolute; top: 0; left: 0; z-index: 1; touch-action: none; }
-        .instruction { position: absolute; top: 15%; background: rgba(255, 255, 255, 0.5); padding: 12px 24px; border-radius: 25px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); color: #444; font-size: 1.1rem; z-index: 5; pointer-events: none; transition:0.5s;}
+        
+        /* 修改点：文字提示加深对比度 */
+        .instruction { 
+            position: absolute; top: 18%; background: rgba(255, 255, 255, 0.8); 
+            padding: 15px 30px; border-radius: 30px; border: 1px solid rgba(255,182,193,0.5);
+            color: var(--t-brown); font-weight: bold; z-index: 5;
+        }
 
+        /* 高级感：磨砂玻璃卡片 */
         .glass-card {
-            background: rgba(255, 255, 255, 0.45);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-radius: 40px; border: 1px solid rgba(255,255,255,0.6);
-            padding: 45px 30px; width: 100%; max-width: 360px;
-            box-shadow: 0 25px 60px rgba(0,0,0,0.12); z-index: 10;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px; border: 1px solid rgba(255,255,255,0.8);
+            padding: 40px 25px; width: 90%; max-width: 350px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1); z-index: 100;
         }
+
+        /* 按钮动效升级 */
         .btn {
-            margin-top: 28px; padding: 14px 40px; background: #ff758c; color: #fff;
-            border-radius: 50px; border: none; font-weight: bold; font-size: 1rem;
-            box-shadow: 0 10px 25px rgba(255, 117, 140, 0.4); transition: 0.3s;
+            margin-top: 25px; padding: 15px 40px; background: linear-gradient(45deg, #ff758c, #ff7eb3);
+            color: #fff; border-radius: 50px; border: none; font-weight: bold;
+            box-shadow: 0 8px 20px rgba(255, 117, 140, 0.3); transition: 0.3s;
         }
-        .btn:active{transform:scale(0.95);}
+        .btn:active { transform: scale(0.92); opacity: 0.9; }
 
-        .coupon-box { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        /* 兑换券样式精修 */
+        .coupon-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
         .coupon-item {
-            background: rgba(255,255,255,0.7); padding: 16px 10px; border-radius: 18px;
-            font-size: 0.85rem; color: #d48181; border: 1px dashed #ffafbd;
-            transition: 0.3s; position: relative; overflow: hidden;
+            background: #fff; padding: 12px 5px; border-radius: 12px;
+            font-size: 0.8rem; color: #ff758c; border: 1px solid #ffe4e8;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: 0.4s;
         }
-        .coupon-item.used { background: #e0e0e0; color: #888; border-color: #aaa; transform: rotate(-4deg); }
+        .coupon-item.used { background: #f0f0f0; color: #bbb; border-color: #ddd; transform: scale(0.9) rotate(-3deg); }
 
+        /* 音乐按钮 (修复图标) */
         #music-toggle {
-            position: fixed; top: 25px; right: 25px; z-index: 1000;
-            width: 44px; height: 44px; background: rgba(255,255,255,0.8);
-            border-radius: 50%; border: none; font-size: 22px; box-shadow:0 4px 15px rgba(0,0,0,0.1);
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            width: 40px; height: 40px; background: rgba(255,255,255,0.9);
+            border-radius: 50%; border: 1px solid #eee; font-size: 18px;
         }
-        .name-sign{
-            margin-top:20px;
-            text-align:right;
-            color:#d93a70;
-            font-weight:bold;
-            font-size:17px;
+
+        .name-sign { margin-top: 20px; text-align: right; color: #ff758c; font-style: italic; font-weight: bold; }
+
+        /* 流光文字效果 */
+        .shimmer {
+            background: linear-gradient(to right, #5d4037 0%, #d4af37 50%, #5d4037 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
         }
+        @keyframes shimmer { to { background-position: 200% center; } }
     </style>
 </head>
 <body>
 
 <div class="bg-layer"></div>
-<button id="music-toggle" onclick="togglePlay()">🎵</button>
+<button id="music-toggle" onclick="togglePlay()">🔇</button>
 <audio id="bgm" loop src="https://www.image2url.com/r2/default/audio/1778340688432-2f2eae9e-cb05-4a95-95cb-a345b08abf41.mp3"></audio>
 
 <div class="scene active" id="s1">
     <div class="envelope-wrapper" onclick="toScene(2)">
-        <div class="heart-seal">❤️</div>
+        <div class="heart-seal">💌</div>
     </div>
-    <p style="margin-top:40px; color:#5d4037; font-weight: bold; letter-spacing:2px; font-size:18px;">妈妈亲启，拆开惊喜</p>
+    <p class="shimmer" style="margin-top:40px; font-weight:bold; letter-spacing:3px; font-size:20px;">
+        妈妈亲启，拆开惊喜
+    </p>
 </div>
 
 <div class="scene" id="s2">
     <canvas id="garden-canvas"></canvas>
     <div class="instruction">
         <p>滑动手指</p>
-        <p>种下满屏花开</p>
+        <p>为妈妈种下满屏花开 🌸</p>
     </div>
-    <button class="btn" style="position:absolute; bottom:80px; z-index:100;" onclick="toScene(3)">收起花海 🌻</button>
+    <button class="btn" style="position:absolute; bottom:60px; z-index:100;" onclick="toScene(3)">收起花海，看心意 ✨</button>
 </div>
 
 <div class="scene" id="s3">
     <div class="glass-card">
-        <div style="font-size:50px; margin-bottom:10px;">💐</div>
-        <h2 style="color:var(--t-brown); margin:15px 0; font-size:26px;">母亲节快乐</h2>
-        <div id="typed" style="min-height:120px; line-height:1.9; color:#795548; font-size:16px;"></div>
-        <div class="name-sign">爱你的儿子：Alex</div>
-        <button class="btn" onclick="toScene(4)">查看爱的礼物 🎁</button>
+        <div style="font-size:50px;">💐</div>
+        <h2 class="shimmer" style="margin:15px 0; font-size:28px;">母亲节快乐</h2>
+        <div id="typed" style="min-height:100px; line-height:2; color:#795548; font-size:17px; font-weight:500;"></div>
+        <div class="name-sign">—— Alex 敬上</div>
+        <button class="btn" onclick="toScene(4)">打开爱的礼物盒 🎁</button>
     </div>
 </div>
 
 <div class="scene" id="s4">
     <div class="glass-card">
-        <h3 style="color:var(--t-brown); font-size:22px;">爱的兑换券</h3>
-        <p style="font-size:0.85rem; color:#888; margin:6px 0 22px 0;">点击卡片即可核销使用</p>
+        <h3 style="color:var(--t-brown); font-size:22px; margin-bottom:5px;">爱的兑换券</h3>
+        <p style="font-size:0.8rem; color:#aaa; margin-bottom:20px;">点击卡片即刻生效（有效期一辈子）</p>
         <div class="coupon-box">
-            <div class="coupon-item" onclick="use(this)">洗碗一星期</div>
-            <div class="coupon-item" onclick="use(this)">陪逛街不喊累</div>
-            <div class="coupon-item" onclick="use(this)">专属拥抱券</div>
-            <div class="coupon-item" onclick="use(this)">不准生气券</div>
-            <div class="coupon-item" onclick="use(this)">捶背按摩券</div>
-            <div class="coupon-item" onclick="use(this)">永远爱你券</div>
+            <div class="coupon-item" onclick="use(this)">一整周洗碗券</div>
+            <div class="coupon-item" onclick="use(this)">陪逛街不喊累券</div>
+            <div class="coupon-item" onclick="use(this)">超级解忧拥抱</div>
+            <div class="coupon-item" onclick="use(this)">绝不还嘴券</div>
+            <div class="coupon-item" onclick="use(this)">全身按摩30min</div>
+            <div class="coupon-item" onclick="use(this)"> Alex 专属听话券</div>
         </div>
-        <button class="btn" onclick="showFinalSurprise()">❤️ 终极心意 ❤️</button>
+        <button class="btn" onclick="showFinalSurprise()">❤️ 确认我的爱意 ❤️</button>
     </div>
 </div>
 
@@ -152,31 +176,29 @@
     const bgm = document.getElementById('bgm');
     let musicPlaying = false;
 
-    // 音乐控制
+    // 音乐控制逻辑修复
     function togglePlay() {
-        if(musicPlaying) { 
-            bgm.pause(); 
-            document.getElementById('music-toggle').innerText="🔇";
-        } else { 
-            bgm.play(); 
-            document.getElementById('music-toggle').innerText="🎵";
+        const btn = document.getElementById('music-toggle');
+        if(musicPlaying) {
+            bgm.pause();
+            btn.innerText = "🔇";
+        } else {
+            bgm.play().catch(e => console.log("需用户手动触发播放"));
+            btn.innerText = "🎵";
         }
         musicPlaying = !musicPlaying;
     }
 
-    // 场景切换
     function toScene(idx) {
         document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
         document.getElementById('s' + idx).classList.add('active');
         
-        if(idx === 2) { 
-            if(!musicPlaying) togglePlay(); 
-            startGarden(); 
-        }
+        // 第一次切换场景时如果音乐没开，尝试自动开启
+        if(idx === 2 && !musicPlaying) togglePlay(); 
+        if(idx === 2) startGarden();
         if(idx === 3) startType();
     }
 
-    // 种花
     function startGarden() {
         const c = document.getElementById('garden-canvas');
         const ctx = c.getContext('2d');
@@ -186,32 +208,32 @@
         let tip = document.querySelector('.instruction');
         let touched = false;
 
-        c.addEventListener('touchmove', (e) => {
-            if(!touched){
-                tip.style.opacity = '0';
-                touched = true;
-            }
-            const t = e.touches[0];
-            drawFlower(t.clientX, t.clientY);
+        c.addEventListener('touchstart', () => {
+            if(!touched){ tip.style.opacity = '0'; touched = true; }
         });
-        
+
+        c.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            const t = e.touches[0];
+            for(let i=0; i<2; i++) drawFlower(t.clientX + (Math.random()-0.5)*20, t.clientY + (Math.random()-0.5)*20);
+        }, {passive: false});
+
         function drawFlower(x, y) {
             const petals = 6;
-            const r = Math.random() * 9 + 5;
-            ctx.fillStyle = `rgba(255, ${160 + Math.random()*40}, ${190 + Math.random()*40}, 0.75)`;
+            const r = Math.random() * 8 + 4;
+            ctx.fillStyle = `rgba(255, ${160 + Math.random()*50}, ${180 + Math.random()*50}, 0.6)`;
             for(let i=0; i<petals; i++) {
                 ctx.beginPath();
                 ctx.arc(x + Math.cos(i*2*Math.PI/petals)*r, y + Math.sin(i*2*Math.PI/petals)*r, r, 0, Math.PI*2);
                 ctx.fill();
             }
-            ctx.fillStyle = "#fff59d";
+            ctx.fillStyle = "#fff";
             ctx.beginPath(); ctx.arc(x, y, r/2, 0, Math.PI*2); ctx.fill();
         }
     }
 
-    // 打字机
     function startType() {
-        const text = "感谢你不是超人，\n却为我变成了万能。\n愿你被岁月温柔以待，\n永远平安快乐，\n永远是我最爱的少女！";
+        const text = "感谢你不是超人，\n却为我变成了万能。\n在这个特殊的日子里，\n愿岁月对你温柔以待，\n你永远是我心中最美的少女！";
         let n = 0;
         const target = document.getElementById('typed');
         target.innerHTML = "";
@@ -220,48 +242,47 @@
                 target.innerHTML += text[n] === '\n' ? '<br>' : text[n];
                 n++;
             } else { clearInterval(timer); }
-        }, 90);
+        }, 100);
     }
 
-    // 兑换券核销
     function use(el) {
         if(!el.classList.contains('used')) {
             el.classList.add('used');
-            el.innerHTML += " ✅";
-            if(window.navigator.vibrate) window.navigator.vibrate(40);
+            el.innerText = "已核销 ✅";
+            if(window.navigator.vibrate) window.navigator.vibrate(30);
         }
     }
 
-    // 最终惊喜
     function showFinalSurprise(){
-        alert("妈妈，谢谢你一直爱我、守护我、包容我。\n我会永远爱你，母亲节快乐！\n—— Alex");
+        // 这里可以换成更有仪式感的弹窗或跳转
+        alert("Alex 想对妈妈说：\n\n谢谢你赋予我生命，\n谢谢你无尽的包容。\n我会努力成为你的骄傲！\n母亲节快乐！❤️");
     }
 
-    // 飘落花瓣
-    const fallEmojis = ['🌸','💮','🌹','✨','💕','💖'];
+    // 装饰物生成逻辑（保持在底层）
+    const fallEmojis = ['🌸','💮','✨','🎈'];
     function createFall(){
-        let f = document.createElement('div');
+        const f = document.createElement('div');
         f.className = 'fall-item';
         f.innerHTML = fallEmojis[Math.floor(Math.random()*fallEmojis.length)];
         f.style.left = Math.random()*100 + '%';
-        f.style.animationDuration = Math.random()*5 + 6 + 's';
+        f.style.fontSize = Math.random()*10 + 15 + 'px';
+        f.style.animationDuration = Math.random()*4 + 5 + 's';
         document.body.appendChild(f);
-        setTimeout(()=>f.remove(),12000);
+        setTimeout(() => f.remove(), 9000);
     }
-    setInterval(createFall,350);
+    setInterval(createFall, 400);
 
-    // 点击爱心爆炸
-    document.addEventListener('click',(e)=>{
-        for(let i=0;i<8;i++){
-            setTimeout(()=>{
-                let h = document.createElement('div');
-                h.className = 'heart-burst';
-                h.innerHTML = ['❤️','💖','💗','⭐','💞'][Math.floor(Math.random()*5)];
-                h.style.left = e.clientX + (Math.random()-0.5)*90 + 'px';
-                h.style.top = e.clientY + 'px';
-                document.body.appendChild(h);
-                setTimeout(()=>h.remove(),1800);
-            },i*50);
+    // 点击特效（保持在顶层）
+    document.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        for(let i=0; i<6; i++){
+            const h = document.createElement('div');
+            h.className = 'heart-burst';
+            h.innerHTML = ['❤️','💖','✨'][Math.floor(Math.random()*3)];
+            h.style.left = touch.clientX + (Math.random()-0.5)*60 + 'px';
+            h.style.top = touch.clientY + 'px';
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 1200);
         }
     });
 </script>
